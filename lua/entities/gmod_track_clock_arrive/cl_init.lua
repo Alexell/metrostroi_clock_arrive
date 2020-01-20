@@ -27,8 +27,8 @@ function ENT:Draw()
 	self:DrawModel()
 	local pos = self:LocalToWorld(Vector(22,-1.5,0))
 	local ang = self:LocalToWorldAngles(Angle(180,0,-90))
-	local arr_min = "--"
-	local arr_sec = "--"
+	local arr_min = 0
+	local arr_sec = 0
 	cam.Start3D2D(pos,ang,0.3)
 		draw.Text({
 			text = "Направление",
@@ -46,10 +46,8 @@ function ENT:Draw()
 			color = Color(200,255,255,255)})
 	cam.End3D2D()
 	if self.LocalInterval >= 0 then
-		if self.LocalInterval > 0 then
-			arr_min = string.format("%02i",math.floor(self.LocalInterval / 60))
-			arr_sec = string.format("%02i",math.floor(self.LocalInterval % 60))
-		end
+		arr_min = string.format("%02i",math.floor(self.LocalInterval / 60))
+		arr_sec = string.format("%02i",math.floor(self.LocalInterval % 60))
 		cam.Start3D2D(pos,ang,0.3)
 			draw.Text({
 				text = "Поезд прибывает через",
@@ -117,28 +115,22 @@ function ENT:Think()
 			self.LocalInterval = self.RealInterval
 		end
 	elseif self.RealInterval == -1 then
-		if self.TrainInStation == false then -- чтобы не срабатывало при отправлении
-			if self.LocalInterval > 1 then
+			if self.LocalInterval > 0 then
 				self.LocalInterval = self.LocalInterval - 1
 			else
-				self.LocalInterval = -1
+				self.LocalInterval = -1 -- поезд прибывает
 			end
-		end
 	elseif self.RealInterval == -2 then
-		self.LocalInterval = 0
+		self.LocalInterval = -2 -- пустой экран
 	end
 	if self.Platform then
 		if self.Platform:GetNW2Int("TrainDoorCount",0) > 0 then
 			self.TrainInStation = true
-			self.LocalInterval = -2
+			if self.RealInterval ~= -2 then self.RealInterval = -2 end
 			self.LastInterval = 0
 		else
 			if self.TrainInStation == true then
-				if self.LocalInterval == -2 then self.LocalInterval = 0 end
-				timer.Simple(5,function()
-					self.TrainInStation = false
-					if self.RealInterval == -1 then self.RealInterval = 0 end
-				end)
+				timer.Simple(5,function() self.TrainInStation = false end)
 			end
 		end
 	end

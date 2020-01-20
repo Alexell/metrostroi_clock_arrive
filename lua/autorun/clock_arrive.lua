@@ -50,7 +50,7 @@ else
 			local cur_st = train:ReadCell(49160)
 			local next_st = 0
 			local path = train:ReadCell(49167)
-			if train.Speed > 5 then
+			if train.Speed > 10 then
 				if cur_st ~= 0 then -- станция
 					if TrainsArrive[train] then -- чтобы не срабатывало при отправлении
 						TrainsArrive[train] = {}
@@ -140,5 +140,5 @@ else
 		end
 		if IsValid(ply) then ply:ChatPrint("Loaded "..#Clocks.." clocks arrive.") end
 	end)
-	timer.Create("ClocksArriveLoad",4,1,function() RunConsoleCommand("clocks_arrive_load") end)
+	timer.Create("ClocksArriveLoad",4,1,function() RunConsoleCommand("clocks_arrive_load") timer.Remove("ClocksArriveLoad") end)
 end
