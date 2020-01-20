@@ -40,7 +40,7 @@ else
 		end
 	end
 	
-	timer.Create("UpdateTrainsInfo",3,0,function()
+	timer.Create("CAUpdateTrainsInfo",3,0,function()
 		for k,v in pairs(TrainsArrive) do
 			if not Metrostroi.TrainPositions[k] then TrainsArrive[k] = nil end
 		end
@@ -52,12 +52,12 @@ else
 			local path = train:ReadCell(49167)
 			if train.Speed > 10 then
 				if cur_st ~= 0 then -- станция
-					if TrainsArrive[train] then -- чтобы не срабатывало при отправлении
+					--[[if TrainsArrive[train] then -- чтобы не срабатывало при отправлении
 						TrainsArrive[train] = {}
 						TrainsArrive[train].station = cur_st
 						TrainsArrive[train].path = path
 						TrainsArrive[train].arrive = -1
-					end
+					end]]--
 				else -- перегон
 					next_st = train:ReadCell(49161)
 					if next_st ~= 0 then
@@ -94,7 +94,7 @@ else
 			end
 
 			if #ArrTimes < 1 then 
-				ent:SetNW2Int("ArrTime",-2) 
+				ent:SetNW2Int("ArrTime",-1) 
 			else
 				local min_arr
 				for k,v in pairs(ArrTimes) do

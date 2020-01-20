@@ -1,17 +1,11 @@
 include("shared.lua")
 
-local function FindPlatform(st,path)
-	for k,v in pairs(ents.FindByClass("gmod_track_platform")) do
-		if not IsValid(v) then continue end
-		if v:GetNWInt("StationIndex") == st and v:GetNWInt("PlatformIndex") == path then return v end
-	end
-end
-
 function ENT:Initialize()
 	self:SetModel("models/metrostroi/clock_interval_moscow.mdl")
-	self.LastTime = 0
 	self.RealInterval = 0
 	self.LocalInterval = 0
+	self.TrainArrived = false
+	self.TrainLeave = false
 	self.Text = self:GetNW2String("NextStation","Неизвестно")
 	if utf8.len(self.Text) > 20 then
 		local p = utf8.offset(self.Text,20,1)-1
@@ -19,8 +13,6 @@ function ENT:Initialize()
 	end
 	self.Station = self:GetNW2Int("Station",0)
 	self.Path = self:GetNW2Int("Path",0)
-	self.Platform = FindPlatform(self.Station,self.Path)
-	self.TrainInStation = false
 end
 
 function ENT:Draw()
@@ -100,38 +92,41 @@ function ENT:Draw()
 end
 
 function ENT:Think()
-	if CurTime() - self.LastTime < 1 then return end
-	self.LastTime = CurTime()
-	
-    if self.RealInterval ~= -1 and self.TrainInStation ~= true then
-		self.RealInterval = self:GetNW2Int("ArrTime",-2)
-	end
-	
-	if self.RealInterval > 0 then
-		if self.LastInterval == self.RealInterval then
-			self.LocalInterval = self.LocalInterval - 1
-		else
-			self.LastInterval = self.RealInterval
-			self.LocalInterval = self.RealInterval
-		end
-	elseif self.RealInterval == -1 then
-			if self.LocalInterval > 0 then
+if self.Station == 151 and self.Path == 1 then
+    if self:GetTrain() == false or self.TrainLeave == true then
+		self.RealInterval = self:GetNW2Int("ArrTime",-1)
+		print("Get RealInterval")
+		if self.RealInterval > 0 then
+			if self.LastInterval == self.RealInterval then
 				self.LocalInterval = self.LocalInterval - 1
 			else
-				self.LocalInterval = -1 -- поезд прибывает
+				self.LastInterval = self.RealInterval
+				self.LocalInterval = self.RealInterval
 			end
-	elseif self.RealInterval == -2 then
-		self.LocalInterval = -2 -- пустой экран
-	end
-	if self.Platform then
-		if self.Platform:GetNW2Int("TrainDoorCount",0) > 0 then
-			self.TrainInStation = true
-			if self.RealInterval ~= -2 then self.RealInterval = -2 end
-			self.LastInterval = 0
 		else
-			if self.TrainInStation == true then
-				timer.Simple(5,function() self.TrainInStation = false end)
-			end
+			self.LocalInterval = -2
 		end
 	end
+	if self:GetTrain() == true then
+		if self:GetTrainStopped() then
+			self.TrainArrived = true
+			self.LocalInterval = -2 -- пустой экран
+			self.LastInterval = 0
+		else
+			if self.TrainArrived == true then -- убывает
+				self.TrainArrived = false
+				self.TrainLeave = true
+			else
+				if self.LocalInterval > 0 then
+					self.LocalInterval = self.LocalInterval - 1
+				else
+					self.LocalInterval = -1 -- поезд прибывает
+				end
+			end
+		end
+	else
+		self.TrainLeave = false
+	end
+	self:SetNextClientThink(CurTime()+1)
+end
 end
