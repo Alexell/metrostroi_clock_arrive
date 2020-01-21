@@ -111,14 +111,16 @@ function ENT:Think()
 			self.LocalInterval = -2 -- пустой экран
 			self.LastInterval = 0
 		else
-			if self.TrainArrived == true then
-				self.TrainArrived = false
-				self.TrainLeave = true
-			else
-				if self.LocalInterval > 0 then
-					self.LocalInterval = self.LocalInterval - 1
+			if self.TrainLeave == false then
+				if self.TrainArrived == true then
+					self.TrainArrived = false
+					self.TrainLeave = true
 				else
-					self.LocalInterval = -1 -- поезд прибывает
+					if self.LocalInterval > 0 then
+						self.LocalInterval = self.LocalInterval - 1
+					else
+						self.LocalInterval = -1 -- поезд прибывает
+					end
 				end
 			end
 		end
