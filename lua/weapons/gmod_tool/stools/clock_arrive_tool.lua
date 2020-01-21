@@ -73,6 +73,6 @@ function TOOL.BuildCPanel(panel)
 	
 	panel:AddControl("button",{ 
 		Label = "Загрузить часы", 
-		Command = "clocks_arrive_load" -- создать конкомманду в авторане
+		Command = "clocks_arrive_load"
 	})
 end

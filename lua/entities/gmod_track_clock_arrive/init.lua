@@ -21,24 +21,22 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-if self.Station == 151 and self.Path == 1 then
 	if IsValid(self.Platform) then
 		if IsValid(self.Platform.CurrentTrain) then
 			local train = self.Platform.CurrentTrain
-			self:SetTrain(true)
+			if self:GetTrain() == false then self:SetTrain(true) end
 			if train.Speed < 1 then
-				self:SetTrainStopped(true)
+				if self:GetTrainStopped() == false then self:SetTrainStopped(true) end
 			else
-				self:SetTrainStopped(false)
+				if self:GetTrainStopped() == true then self:SetTrainStopped(false) end
 			end
 		else
-			self:SetTrain(false)
-			self:SetTrainStopped(false)
+			if self:GetTrain() == true then self:SetTrain(false) end
+			if self:GetTrainStopped() == true then self:SetTrainStopped(false) end
 		end
 	else
 		self.Platform = FindPlatform(self.Station,self.Path)
 	end
 	self:NextThink(CurTime()+1)
 	return true
-end
 end

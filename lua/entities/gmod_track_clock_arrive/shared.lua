@@ -5,5 +5,5 @@ ENT.AdminSpawnable  = false
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool",0,"Train")
-	self:NetworkVar("Bool",0,"TrainStopped")
+	self:NetworkVar("Bool",1,"TrainStopped")
 end
