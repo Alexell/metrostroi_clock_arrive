@@ -5,9 +5,9 @@ TOOL.ConfigName		= ""
 
 if CLIENT then
     language.Add("Tool.clock_arrive_tool.name", "Clock Arrive Tool")
-    language.Add("Tool.clock_arrive_tool.desc", "Creating clocks arrive")
-    language.Add("Tool.clock_arrive_tool.0", "Primary: Spawn clock arrive entity\nSecondary: Remove clock arrive")
-    language.Add("Undone_clock_arrive_tool", "Undone clock arrive")
+    language.Add("Tool.clock_arrive_tool.desc", "Adds arrival clocks")
+    language.Add("Tool.clock_arrive_tool.0", "Primary: Spawn arrival clock. Secondary: Remove arrival clock.")
+    language.Add("Undone_clock_arrive_tool", "Undone arrival clock")
 end
 
 function TOOL:LeftClick(trace)
@@ -21,16 +21,17 @@ function TOOL:LeftClick(trace)
 
 	local vec = trace.HitPos
 	local ang = trace.HitNormal:Angle()
+	ang:RotateAroundAxis(ang:Up(),-90)
 	local station = GetConVar("clock_arrive_st"):GetString()
 	local path = GetConVar("clock_arrive_path"):GetString()
-	local nxt = GetConVar("clock_arrive_next"):GetString()
+	local dest = GetConVar("clock_arrive_dest"):GetString()
 
 	net.Start("SpawnClockArrive")
 		net.WriteVector(vec)
 		net.WriteAngle(ang)
 		net.WriteString(station)
 		net.WriteString(path)
-		net.WriteString(nxt)
+		net.WriteString(dest)
 	net.SendToServer()
 	return true
 end
@@ -52,6 +53,8 @@ function TOOL:RightClick(trace)
     return true
 end
 
+-- TODO: Update entity data on Reload
+
 function TOOL.BuildCPanel(panel)
 	panel:AddControl("textbox",{ 
 		Label = "ID станции", 
@@ -63,8 +66,8 @@ function TOOL.BuildCPanel(panel)
 		Command = "clock_arrive_path"
 	})
 	panel:AddControl("textbox",{ 
-		Label = "След. станция",
-		Command = "clock_arrive_next"
+		Label = "Направление",
+		Command = "clock_arrive_dest"
 	})
 	panel:AddControl("button",{ 
 		Label = "Сохранить часы", 

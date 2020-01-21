@@ -6,7 +6,7 @@ function ENT:Initialize()
 	self.LocalInterval = 0
 	self.TrainArrived = false
 	self.TrainLeave = false
-	self.Text = self:GetNW2String("NextStation","Неизвестно")
+	self.Text = self:GetNW2String("Destination","Не указано")
 	if utf8.len(self.Text) > 20 then
 		local p = utf8.offset(self.Text,20,1)-1
 		self.Text = self.Text:sub(1,p).."."

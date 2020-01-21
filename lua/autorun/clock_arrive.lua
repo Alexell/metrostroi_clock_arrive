@@ -1,18 +1,17 @@
 if CLIENT then
 	local Station = CreateClientConVar("clock_arrive_st", "0", false)
 	local Path = CreateClientConVar("clock_arrive_path", "0", false)
-	local Next = CreateClientConVar("clock_arrive_next", "Название", false)
+	local Next = CreateClientConVar("clock_arrive_dest", "Не указано", false)
 else
 	TrainsArrive = TrainsArrive or {}
 	util.AddNetworkString("SpawnClockArrive")
 
-	local function SpawnClockArrive(ply,vec,ang,station,path,nxt)
+	local function SpawnClockArrive(ply,vec,ang,station,path,dest)
 		local ent = ents.Create("gmod_track_clock_arrive")
 		ent:SetPos(vec)
 		local angle = ang
-		if IsValid(ply) then angle:RotateAroundAxis(ang:Up(),-90) end -- только при спавне игроком
 		ent:SetAngles(angle)
-		if IsValid(ply) then ent:SetPos(ent:LocalToWorld(Vector(0,8,0))) end -- только при спавне игроком
+		if IsValid(ply) then ent:SetPos(ent:LocalToWorld(Vector(0,8,0))) end -- смещение только при спавне игроком
 		ent:Spawn()
 		if IsValid(ply) then
 			undo.Create("clock_arrive_tool")
@@ -24,13 +23,13 @@ else
 		ent.Path = tonumber(path)
 		ent:SetNW2Int("Station",station)
 		ent:SetNW2Int("Path",path)
-		ent:SetNW2String("NextStation",nxt)
+		ent:SetNW2String("Destination",dest)
 	end
 	
 	net.Receive("SpawnClockArrive", function(len,ply)
 		if not ply:IsAdmin() then return end
-		local vec,ang,station,path,nxt = net.ReadVector(),net.ReadAngle(),net.ReadString(),net.ReadString(),net.ReadString()
-		SpawnClockArrive(ply,vec,ang,station,path,nxt)
+		local vec,ang,station,path,dest = net.ReadVector(),net.ReadAngle(),net.ReadString(),net.ReadString(),net.ReadString()
+		SpawnClockArrive(ply,vec,ang,station,path,dest)
 	end)
 	
 	local function FindPlatform(st,path)
@@ -105,7 +104,7 @@ else
 		local cur_map = game.GetMap()
 		Clocks[cur_map] = {}
 		for _,ent in pairs(ents.FindByClass("gmod_track_clock_arrive")) do
-			if IsValid(ent) then table.insert(Clocks[cur_map],1,{ent:GetPos(),ent:GetAngles(),ent.Station,ent.Path,ent:GetNW2String("NextStation")}) end
+			if IsValid(ent) then table.insert(Clocks[cur_map],1,{ent:GetPos(),ent:GetAngles(),ent.Station,ent.Path,ent:GetNW2String("Destination")}) end
 		end
 		file.Write("clocks_arrive.txt", util.TableToJSON(Clocks,true))
 		print("Saved "..#Clocks[cur_map].." clocks arrive.")
