@@ -6,6 +6,8 @@
 
 ![Metrostroi Clock Arrive](https://mss.community/images/addons/metrostroi_clock_arrive.jpg)
 
+**Аддон в Steam Workshop:** https://steamcommunity.com/sharedfiles/filedetails/?id=1975028372
+
 **Описание:**
 
 Часы для станций, отображающие направление и время до прибытия состава. Сделаны на модели интервальных часов.
