@@ -11,11 +11,23 @@ else
 	util.AddNetworkString("SpawnClockArrive")
 
 	local function SpawnClockArrive(ply,vec,ang,station,path,dest,line,color)
+		local ex_vec
+		local ex_ang
+		local entlist = ents.FindInSphere(vec,10) or {}
+		for k,v in pairs(entlist) do
+			if v:GetClass() == "gmod_track_clock_arrive" then
+				if IsValid(v) then
+					ex_vec = v:GetPos()
+					ex_ang = v:GetAngles()
+					SafeRemoveEntity(v) 
+				end
+			end
+		end
 		local ent = ents.Create("gmod_track_clock_arrive")
-		ent:SetPos(vec)
-		local angle = ang
+		ent:SetPos(ex_vec or vec)
+		local angle = ex_ang or ang
 		ent:SetAngles(angle)
-		if IsValid(ply) then ent:SetPos(ent:LocalToWorld(Vector(-5,0,-20))) end -- смещение только при спавне игроком
+		if IsValid(ply) and not ex_vec then ent:SetPos(ent:LocalToWorld(Vector(-5,0,-20))) end -- смещение только при спавне игроком
 		ent:Spawn()
 		if IsValid(ply) then
 			undo.Create("clock_arrive_tool")

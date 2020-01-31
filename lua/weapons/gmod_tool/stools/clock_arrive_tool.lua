@@ -6,7 +6,7 @@ TOOL.ConfigName		= ""
 if CLIENT then
     language.Add("Tool.clock_arrive_tool.name", "Clock Arrive Tool")
     language.Add("Tool.clock_arrive_tool.desc", "Adds arrival clocks")
-    language.Add("Tool.clock_arrive_tool.0", "Primary: Spawn arrival clock. Secondary: Remove arrival clock.")
+    language.Add("Tool.clock_arrive_tool.0", "Primary: Spawn/update arrival clock. Secondary: Remove arrival clock.")
     language.Add("Undone_clock_arrive_tool", "Undone arrival clock")
 end
 
@@ -60,7 +60,6 @@ function TOOL:RightClick(trace)
 end
 
 -- TODO: Read entity data on Reload
--- TODO: Update entity data on Left Click
 
 function TOOL.BuildCPanel(panel)
 	panel:AddControl("textbox",{ 
