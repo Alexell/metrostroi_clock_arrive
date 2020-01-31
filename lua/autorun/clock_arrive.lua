@@ -138,5 +138,20 @@ else
 		end
 		if IsValid(ply) then ply:ChatPrint("Loaded "..#Clocks.." clocks arrive.") end
 	end)
+	
+	-- Временная команда
+	concommand.Add("clocks_arrive_fix", function(ply)
+		if not IsValid(ply) or not ply:IsAdmin() then return end
+		local col = 0
+		for _,ent in pairs(ents.FindByClass("gmod_track_clock_arrive")) do
+			if not IsValid(ent) then continue end
+			local ang = ent:GetAngles()
+			ang:RotateAroundAxis(ang:Up(),-90)
+			ent:SetAngles(ang)
+			ent:SetPos(ent:LocalToWorld(Vector(3,0,0)))
+			col = col + 1
+		end
+		if IsValid(ply) then ply:ChatPrint("Fixed "..col.." clocks arrive.") end
+	end)
 	timer.Create("ClocksArriveLoad",4,1,function() RunConsoleCommand("clocks_arrive_load") timer.Remove("ClocksArriveLoad") end)
 end

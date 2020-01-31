@@ -61,7 +61,6 @@ end
 
 -- TODO: Read entity data on Reload
 -- TODO: Update entity data on Left Click
--- TODO: Auto-fixer for old spawned clocks
 
 function TOOL.BuildCPanel(panel)
 	panel:AddControl("textbox",{ 
@@ -97,5 +96,14 @@ function TOOL.BuildCPanel(panel)
 	panel:AddControl("button",{ 
 		Label = "Загрузить часы", 
 		Command = "clocks_arrive_load"
+	})
+	
+	-- Временная кнопка
+	panel:AddControl("label",{ 
+		text = "Кнопка ниже исправит позицию и углы всех часов на карте, если они стали повернуты не той стороной после обновления модели.\nПосле исправления не забудьте сохранить часы!"
+	})
+	panel:AddControl("button",{ 
+		Label = "Исправить старые углы/позиции", 
+		Command = "clocks_arrive_fix"
 	})
 end
