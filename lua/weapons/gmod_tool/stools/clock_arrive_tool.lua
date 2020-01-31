@@ -15,11 +15,13 @@ function TOOL:LeftClick(trace)
 	if self.LastUse and CurTime() - self.LastUse < 1 then return end
 	self.LastUse = CurTime()
 	local ply = self:GetOwner()
-	if (ply:IsValid()) and (not ply:IsAdmin()) then return false end
+	if LocalPlayer() ~= ply then return false end
+	if not ply:IsValid() or not ply:IsAdmin() then return false end
 	if not trace then return false end
 	if trace.Entity and trace.Entity:IsPlayer() then return false end
 
 	local vec = trace.HitPos
+	if not vec then return false end
 	local ang = trace.HitNormal:Angle()
 	ang:RotateAroundAxis(ang:Up(),-90)
 	local station = GetConVar("clock_arrive_st"):GetString()
@@ -40,10 +42,10 @@ function TOOL:RightClick(trace)
 	if CLIENT then return end
 	
     local ply = self:GetOwner()
-    if (ply:IsValid()) and (not ply:IsAdmin()) then return false end
+    if not ply:IsValid() or not ply:IsAdmin() then return false end
     if not trace then return false end
     if trace.Entity and trace.Entity:IsPlayer() then return false end
-	
+	if not trace.HitPos then return false end
 	local entlist = ents.FindInSphere(trace.HitPos,10) or {}
     for k,v in pairs(entlist) do
         if v:GetClass() == "gmod_track_clock_arrive" then
