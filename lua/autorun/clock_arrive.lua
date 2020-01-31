@@ -110,7 +110,7 @@ else
 		local cur_map = game.GetMap()
 		Clocks[cur_map] = {}
 		for _,ent in pairs(ents.FindByClass("gmod_track_clock_arrive")) do
-			if IsValid(ent) then table.insert(Clocks[cur_map],1,{ent:GetPos(),ent:GetAngles(),ent.Station,ent.Path,ent:GetNW2String("Destination")}) end
+			if IsValid(ent) then table.insert(Clocks[cur_map],1,{ent:GetPos(),ent:GetAngles(),ent.Station,ent.Path,ent:GetNW2String("Destination"),ent:GetNW2String("Line"),ent:GetNW2String("LineColor")}) end
 		end
 		file.Write("clocks_arrive.txt", util.TableToJSON(Clocks,true))
 		print("Saved "..#Clocks[cur_map].." clocks arrive.")
@@ -132,7 +132,7 @@ else
 			return
 		else
 			for _,val in ipairs(Clocks) do
-				SpawnClockArrive(nil,val[1],val[2],val[3],val[4],val[5])
+				SpawnClockArrive(nil,val[1],val[2],val[3],val[4],val[5],val[6],val[7])
 			end
 			print("Loaded "..#Clocks.." clocks arrive.")
 		end
