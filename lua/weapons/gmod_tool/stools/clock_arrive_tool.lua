@@ -23,10 +23,12 @@ function TOOL:LeftClick(trace)
 	local vec = trace.HitPos
 	if not vec then return false end
 	local ang = trace.HitNormal:Angle()
-	ang:RotateAroundAxis(ang:Up(),-90)
+	ang:RotateAroundAxis(ang:Up(),-180)
 	local station = GetConVar("clock_arrive_st"):GetString()
 	local path = GetConVar("clock_arrive_path"):GetString()
 	local dest = GetConVar("clock_arrive_dest"):GetString()
+	local line = GetConVar("clock_arrive_line"):GetString()
+	local line_color = GetConVar("clock_arrive_line_r"):GetString()..","..GetConVar("clock_arrive_line_g"):GetString()..","..GetConVar("clock_arrive_line_b"):GetString()
 
 	net.Start("SpawnClockArrive")
 		net.WriteVector(vec)
@@ -34,6 +36,8 @@ function TOOL:LeftClick(trace)
 		net.WriteString(station)
 		net.WriteString(path)
 		net.WriteString(dest)
+		net.WriteString(line)
+		net.WriteString(line_color)
 	net.SendToServer()
 	return true
 end
@@ -55,7 +59,9 @@ function TOOL:RightClick(trace)
     return true
 end
 
--- TODO: Update entity data on Reload
+-- TODO: Read entity data on Reload
+-- TODO: Update entity data on Left Click
+-- TODO: Auto-fixer for old spawned clocks
 
 function TOOL.BuildCPanel(panel)
 	panel:AddControl("textbox",{ 
@@ -71,11 +77,23 @@ function TOOL.BuildCPanel(panel)
 		Label = "Направление",
 		Command = "clock_arrive_dest"
 	})
+	panel:AddControl("slider",{
+		Label="Линия",
+		Command="clock_arrive_line",
+		min=1,
+		max=8
+	})
+	panel:AddControl("color",{
+		Label="Цвет линии",
+		Red="clock_arrive_line_r",
+		Green="clock_arrive_line_g",
+		Blue="clock_arrive_line_b"
+	})
+
 	panel:AddControl("button",{ 
 		Label = "Сохранить часы", 
 		Command = "clocks_arrive_save"
 	})
-	
 	panel:AddControl("button",{ 
 		Label = "Загрузить часы", 
 		Command = "clocks_arrive_load"

@@ -10,7 +10,7 @@ local function FindPlatform(st,path)
 end
 
 function ENT:Initialize()
-	self:SetModel("models/metrostroi/clock_interval_moscow.mdl")
+	self:SetModel("models/alexell/clock_arrive.mdl")
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_WORLD)
 	self:PhysicsInit(SOLID_VPHYSICS)

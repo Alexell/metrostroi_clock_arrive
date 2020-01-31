@@ -1,17 +1,21 @@
 if CLIENT then
-	local Station = CreateClientConVar("clock_arrive_st", "0", false)
-	local Path = CreateClientConVar("clock_arrive_path", "0", false)
-	local Next = CreateClientConVar("clock_arrive_dest", "Не указано", false)
+	local Station = CreateClientConVar("clock_arrive_st","0",false)
+	local Path = CreateClientConVar("clock_arrive_path","0",false)
+	local Line = CreateClientConVar("clock_arrive_line",1,false)
+	local Line_R = CreateClientConVar("clock_arrive_line_r",128,false)
+	local Line_G = CreateClientConVar("clock_arrive_line_g",128,false)
+	local Line_B = CreateClientConVar("clock_arrive_line_b",128,false)
+	local Next = CreateClientConVar("clock_arrive_dest","Не указано",false)
 else
 	TrainsArrive = TrainsArrive or {}
 	util.AddNetworkString("SpawnClockArrive")
 
-	local function SpawnClockArrive(ply,vec,ang,station,path,dest)
+	local function SpawnClockArrive(ply,vec,ang,station,path,dest,line,color)
 		local ent = ents.Create("gmod_track_clock_arrive")
 		ent:SetPos(vec)
 		local angle = ang
 		ent:SetAngles(angle)
-		if IsValid(ply) then ent:SetPos(ent:LocalToWorld(Vector(0,8,0))) end -- смещение только при спавне игроком
+		if IsValid(ply) then ent:SetPos(ent:LocalToWorld(Vector(-5,0,-20))) end -- смещение только при спавне игроком
 		ent:Spawn()
 		if IsValid(ply) then
 			undo.Create("clock_arrive_tool")
@@ -24,12 +28,14 @@ else
 		ent:SetNW2Int("Station",station)
 		ent:SetNW2Int("Path",path)
 		ent:SetNW2String("Destination",dest)
+		ent:SetNW2String("Line",line)
+		ent:SetNW2String("LineColor",color)
 	end
 	
 	net.Receive("SpawnClockArrive", function(len,ply)
 		if not ply:IsAdmin() then return end
-		local vec,ang,station,path,dest = net.ReadVector(),net.ReadAngle(),net.ReadString(),net.ReadString(),net.ReadString()
-		SpawnClockArrive(ply,vec,ang,station,path,dest)
+		local vec,ang,station,path,dest,line,color = net.ReadVector(),net.ReadAngle(),net.ReadString(),net.ReadString(),net.ReadString(),net.ReadString(),net.ReadString()
+		SpawnClockArrive(ply,vec,ang,station,path,dest,line,color)
 	end)
 	
 	local function FindPlatform(st,path)
