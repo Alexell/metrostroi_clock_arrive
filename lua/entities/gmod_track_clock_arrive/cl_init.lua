@@ -31,8 +31,11 @@ function ENT:Initialize()
 	self.TrainArrived = false
 	self.TrainLeave = false
 	self.Dest = self:GetNW2String("Destination","Не указано")
-	self.Line = self:GetNW2String("Line","1")
+	local line = self:GetNW2String("Line","1")
+	if line == "" then line = "1" end
+	self.Line = line
 	local clr = self:GetNW2String("LineColor","128,128,128")
+	if clr == "" then clr = "128,128,128" end
 	clr = string.Explode(",",clr)
 	self.Color = Color(clr[1],clr[2],clr[3],255)
 	if utf8.len(self.Dest) > 18 then

@@ -13,13 +13,15 @@ else
 	local function SpawnClockArrive(ply,vec,ang,station,path,dest,line,color)
 		local ex_vec
 		local ex_ang
-		local entlist = ents.FindInSphere(vec,10) or {}
-		for k,v in pairs(entlist) do
-			if v:GetClass() == "gmod_track_clock_arrive" then
-				if IsValid(v) then
-					ex_vec = v:GetPos()
-					ex_ang = v:GetAngles()
-					SafeRemoveEntity(v) 
+		if IsValid(ply) then
+			local entlist = ents.FindInSphere(vec,10) or {}
+			for k,v in pairs(entlist) do
+				if v:GetClass() == "gmod_track_clock_arrive" then
+					if IsValid(v) then
+						ex_vec = v:GetPos()
+						ex_ang = v:GetAngles()
+						SafeRemoveEntity(v) 
+					end
 				end
 			end
 		end
