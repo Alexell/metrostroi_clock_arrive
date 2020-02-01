@@ -6,7 +6,7 @@ TOOL.ConfigName		= ""
 if CLIENT then
     language.Add("Tool.clock_arrive_tool.name", "Clock Arrive Tool")
     language.Add("Tool.clock_arrive_tool.desc", "Adds arrival clocks")
-    language.Add("Tool.clock_arrive_tool.0", "Primary: Spawn/update arrival clock. Secondary: Remove arrival clock.")
+    language.Add("Tool.clock_arrive_tool.0", "Primary: Spawn/update arrival clock. Secondary: Remove arrival clock. Reload: Copy clock settings.")
     language.Add("Undone_clock_arrive_tool", "Undone arrival clock")
 end
 
@@ -59,7 +59,38 @@ function TOOL:RightClick(trace)
     return true
 end
 
--- TODO: Read entity data on Reload
+function TOOL:Reload(trace)
+    if SERVER then return end
+
+	local ply = self:GetOwner()
+	if LocalPlayer() ~= ply then return false end
+	if not ply:IsValid() or not ply:IsAdmin() then return false end
+	if not trace then return false end
+	if trace.Entity and trace.Entity:IsPlayer() then return false end
+	if not trace.HitPos then return false end
+	local entlist = ents.FindInSphere(trace.HitPos,10) or {}
+	for k,v in pairs(entlist) do
+		if v:GetClass() == "gmod_track_clock_arrive" then
+			if IsValid(v) then
+				local ent = v
+				local station = tostring(ent.Station)
+				local path = tostring(ent.Path)
+				local dest = ent.Dest
+				local line = ent.Line
+				local color = ent.Color
+				
+				RunConsoleCommand("clock_arrive_st",station)
+				RunConsoleCommand("clock_arrive_path",path)
+				RunConsoleCommand("clock_arrive_dest",dest)
+				RunConsoleCommand("clock_arrive_line",line)
+				RunConsoleCommand("clock_arrive_line_r",color.r)
+				RunConsoleCommand("clock_arrive_line_g",color.g)
+				RunConsoleCommand("clock_arrive_line_b",color.b)
+			end
+		end
+	end
+    return true
+end
 
 function TOOL.BuildCPanel(panel)
 	panel:AddControl("textbox",{ 
