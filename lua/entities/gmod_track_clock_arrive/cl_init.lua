@@ -127,7 +127,7 @@ function ENT:Draw()
 end
 
 function ENT:Think()
-    if not self:GetTrain() or self.TrainLeave == true then
+    if not self:GetTrain() or self.TrainArrived or self.TrainLeave then
 		self.RealInterval = self:GetNW2Int("ArrTime",-1)
 		if self.RealInterval > 0 then
 			if self.LastInterval == self.RealInterval then
@@ -143,8 +143,6 @@ function ENT:Think()
 	if self:GetTrain() then
 		if self:GetTrainStopped() then
 			self.TrainArrived = true
-			self.LocalInterval = -2 -- пустой экран
-			self.LastInterval = 0
 		else
 			if self.TrainLeave == false then
 				if self.TrainArrived == true then
