@@ -6,6 +6,15 @@ if CLIENT then
 	local Line_G = CreateClientConVar("clock_arrive_line_g",128,false)
 	local Line_B = CreateClientConVar("clock_arrive_line_b",128,false)
 	local Next = CreateClientConVar("clock_arrive_dest","Не указано",false)
+	
+	hook.Add("InitPostEntity","ClocksArriveNeedUpdate", function()
+		timer.Simple(5,function()
+			if (IsValid(LocalPlayer()) and LocalPlayer():IsAdmin()) then
+				chat.AddText(Color(100,100,255),"Уважаемый администратор сервера!",Color(255,255,255),"\n\nАддон Metrostroi Clock Arrive",Color(255,0,0)," устарел. ",Color(255,255,255),"Пожалуйста замените его на новую версию:\nhttps://steamcommunity.com/sharedfiles/filedetails/?id=2579263629")
+			end
+			hook.Remove("InitPostEntity","ClocksArriveNeedUpdate")
+		end)
+	end)
 else
 	TrainsArrive = TrainsArrive or {}
 	util.AddNetworkString("SpawnClockArrive")
